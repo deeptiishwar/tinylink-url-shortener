@@ -1,0 +1,200 @@
+:root {
+  --main-bg1: #eef6ff;
+  --main-bg2: #cdecfc;
+  --panel-bg: #fff;
+  --text: #25354d;
+  --primary: #04b2d9;
+  --accent: #1e355e;
+  --border: #a3c2e4;
+  --shadow-blue: rgba(4,178,217,0.06);
+}
+
+/* Gradient background with animated dots */
+body {
+  background: radial-gradient(circle at 25% 80%, var(--main-bg2) 0%, var(--main-bg1) 100%);
+  color: var(--text);
+  font-family: 'Segoe UI', Inter, Arial, sans-serif;
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.background-dots {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  top: 0; left: 0; pointer-events: none;
+  z-index: 0;
+}
+
+.h1-main {
+  margin: 2.6rem 0 1.5rem;
+  font-size: 2.7rem;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -2px;
+  text-align: center;
+  text-shadow: 0 2px 24px rgb(4 178 217 / 10%);
+  z-index: 1;
+}
+
+/* Panel styling */
+.panel {
+  background: var(--panel-bg);
+  border-radius: 1.3rem;
+  box-shadow: 0 12px 44px var(--shadow-blue);
+  padding: 2.2rem 1.5rem;
+  max-width: 100%;
+  width: 80%;
+  margin: 1.7rem auto 0;
+  text-align: center;
+  z-index: 2;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+input, button {
+  padding: 0.9rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border);
+  background: #f6fbff;
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+input:focus, button:focus {
+  outline: none;
+  border: 2px solid var(--primary);
+}
+
+button {
+  background: var(--primary);
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px rgb(4 178 217 / 11%);
+  transition: background 0.18s;
+}
+
+button:hover {
+  background: #0094be;
+  color: #eef6ff;
+}
+
+.search-bar {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.search-bar input {
+  width: 85%;
+}
+
+table {
+  width: 100%;
+  
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background: #fafdff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 16px var(--shadow-blue);
+}
+
+th, td {
+  padding: 0.7rem 0.7rem;
+  text-align: left;
+  border-bottom: 1.5px solid var(--border);
+}
+tr{
+    margin: 50%;
+}
+
+th {
+  background: var(--panel-bg);
+  color: var(--primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary);
+  font-size: 1rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  color: #2451b9
+  
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.copy-btn, .stats-btn, .modal-close-btn {
+  margin-left: 0.5rem;
+  padding: 3px 10px;
+  border-radius: 0.5rem;
+  background: var(--primary);
+  color: var(--panel-bg);
+  border: none;
+  cursor: pointer;
+  font-size: 0.90rem;
+  box-shadow: 0 2px 6px var(--shadow-blue);
+  transition: background 0.28s;
+}
+
+.copy-btn:hover, .stats-btn:hover, .modal-close-btn:hover {
+  background: #0094be;
+  color: #eef6ff;
+}
+
+
+
+@media (max-width: 650px) {
+  .panel { padding: 1.3rem 0.7rem; }
+  th, td { padding: 0.35rem 0.25rem; font-size: 0.96rem; }
+  .h1-main { font-size: 1.2rem; }
+  table { font-size: 0.93rem; }
+}
+
+.modal {
+  position: fixed; top:0; left:0; width:100vw; height:100vh; 
+  background:rgba(4,178,217,0.15);
+  display:flex; align-items:center; justify-content:center; z-index:1000;
+}
+
+.modal-content {
+  background: var(--panel-bg);
+  padding: 2rem 1.2rem;
+  border-radius: 1.1rem;
+  box-shadow: 0 8px 32px var(--shadow-blue);
+  color: var(--accent);
+  min-width: 280px;
+  max-width: 80vw;
+  text-align: left;
+}
+
+.modal-content h2 { color:var(--primary); font-size: 1.25rem; }
+.modal-close-btn {
+  float:right;
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 1.2rem;
+  margin-top: -14px;
+  margin-right: -6px;
+  cursor: pointer;
+}

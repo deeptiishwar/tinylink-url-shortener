@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TinyLink URL Shortener</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="dots-bg" class="background-dots"></canvas>
+  <h1 class="h1-main">TinyLink URL Shortener</h1>
+  <div class="panel">
+    <form id="addLinkForm">
+      <input type="text" id="code" placeholder="Enter custom code (e.g. abc123)" required />
+      <input type="url" id="url" placeholder="Enter full URL to shorten" required />
+      <button type="submit">Create Short Link</button>
+    </form>
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search links by code or URL...">
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Short Link</th>
+          <th>Code</th>
+          <th>URL</th>
+          <th>Clicks</th>
+          <th>Last Clicked</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="linksTableBody"></tbody>
+    </table>
+  </div>
+  <div id="modal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <button class="modal-close-btn" onclick="closeModal()">&times;</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('addLinkForm');
+    const linksTableBody = document.getElementById('linksTableBody');
+    const searchInput = document.getElementById('search');
+    let links = [];
+
+    async function fetchLinks() {
+      const res = await fetch('http://localhost:3000/api/links');
+      links = await res.json();
+      renderLinks();
+    }
+
+    function renderLinks() {
+      const search = searchInput.value.toLowerCase();
+      linksTableBody.innerHTML = '';
+      links
+        .filter(link =>
+          link.code.toLowerCase().includes(search) ||
+          link.url.toLowerCase().includes(search)
+        )
+        .forEach(link => {
+          const shortUrl = `http://localhost:3000/${link.code}`;
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <a href="${shortUrl}" target="_blank">${shortUrl}</a>
+              <button class="copy-btn" onclick="copyShortUrl('${shortUrl}')">Copy</button>
+            </td>
+            <td>${link.code}</td>
+            <td><a href="${link.url}" target="_blank">${link.url}</a></td>
+            <td>${link.clicks}</td>
+            <td>${link.last_clicked ? new Date(link.last_clicked).toLocaleString() : '-'}</td>
+            <td>
+              <button onclick="deleteLink('${link.code}')">Delete</button>
+              <button class="stats-btn" onclick="showStats('${link.code}')">Stats</button>
+            </td>
+          `;
+          linksTableBody.appendChild(tr);
+        });
+    }
+
+    window.copyShortUrl = function(url) {
+      navigator.clipboard.writeText(url);
+      alert("Short URL copied!");
+    }
+
+    async function deleteLink(code) {
+      await fetch(`http://localhost:3000/api/links/${code}`, { method: 'DELETE' });
+      fetchLinks();
+    }
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('code').value.trim();
+      const url = document.getElementById('url').value.trim();
+
+      const res = await fetch('http://localhost:3000/api/links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, url })
+      });
+
+      if (res.status === 201) {
+        form.reset();
+        fetchLinks();
+      } else if (res.status === 409) {
+        alert('Code already exists. Please try another.');
+      } else {
+        alert('Error creating link.');
+      }
+    };
+
+    searchInput.addEventListener('input', renderLinks);
+
+    // Modal/stats
+    window.showStats = async function(code) {
+      const link = links.find(x => x.code === code);
+      if (!link) return;
+      const shortUrl = `http://localhost:3000/${link.code}`;
+      let html = `
+        <h2>Stats for <span style="color:var(--primary)">${link.code}</span></h2>
+        <p><b>Short Link:</b> <a href="${shortUrl}" target="_blank">${shortUrl}</a></p>
+        <p><b>Full URL:</b> <a href="${link.url}" target="_blank">${link.url}</a></p>
+        <p><b>Clicks:</b> ${link.clicks}</p>
+        <p><b>Last Clicked:</b> ${link.last_clicked ? new Date(link.last_clicked).toLocaleString() : '-'}</p>
+      `;
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('modal').style.display = 'flex';
+    }
+    window.closeModal = function() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Dots background animation
+    const canvas = document.getElementById('dots-bg');
+    const ctx = canvas.getContext('2d');
+    let w=window.innerWidth, h=window.innerHeight;
+    let dots = [];
+    function resize() { w=window.innerWidth; h=window.innerHeight; canvas.width=w; canvas.height=h; }
+    window.onresize = resize; resize();
+    for(let i=0; i<100; i++) {
+      dots.push({
+        x: Math.random()*w, y: Math.random()*h,
+        r: Math.random()*2+2,
+        d: Math.random()*2+1,
+        dx: (Math.random()-0.5)*0.08, dy: (Math.random()-0.5)*0.08,
+        color: `rgba(4,178,217,0.35)`
+      });
+    }
+    function drawDots() {
+      ctx.clearRect(0,0,w,h);
+      for(const dot of dots) {
+        ctx.beginPath();
+        ctx.arc(dot.x,dot.y,dot.r,0,2*Math.PI);
+        ctx.fillStyle=dot.color; ctx.fill();
+        dot.x += dot.dx*dot.d;
+        dot.y += dot.dy*dot.d;
+        if(dot.x<0||dot.x>w) dot.dx*=-1;
+        if(dot.y<0||dot.y>h) dot.dy*=-1;
+      }
+      requestAnimationFrame(drawDots);
+    }
+    drawDots();
+
+    fetchLinks();
+  </script>
+</body>
+</html>
