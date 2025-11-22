@@ -12,6 +12,11 @@ app.get('/style.css', (req, res) => {
   res.sendFile(__dirname + '/public/style.css');
 });
 
+// Serve the homepage explicitly
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 
 // IMPORTANT PART: SSL for Neon/Postgres
 const pool = new Pool({
