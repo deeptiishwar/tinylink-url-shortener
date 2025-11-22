@@ -45,7 +45,7 @@
     let links = [];
 
     async function fetchLinks() {
-      const res = await fetch('http://localhost:3000/api/links');
+      const res = await fetch('/api/links');
       links = await res.json();
       renderLinks();
     }
@@ -59,7 +59,7 @@
           link.url.toLowerCase().includes(search)
         )
         .forEach(link => {
-          const shortUrl = `http://localhost:3000/${link.code}`;
+          const shortUrl = `${window.location.origin}/${link.code}`;
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
