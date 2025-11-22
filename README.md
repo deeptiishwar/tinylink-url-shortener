@@ -1,1 +1,1 @@
-tinyurlshort.vercel.app link for preview. 
+https://tinyurlshort.vercel.app/ link for preview. 
