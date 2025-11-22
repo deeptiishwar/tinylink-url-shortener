@@ -85,7 +85,7 @@
     }
 
     async function deleteLink(code) {
-      await fetch(`http://localhost:3000/api/links/${code}`, { method: 'DELETE' });
+      await fetch(`/api/links/${code}`, { method: 'DELETE' });
       fetchLinks();
     }
 
@@ -94,11 +94,12 @@
       const code = document.getElementById('code').value.trim();
       const url = document.getElementById('url').value.trim();
 
-      const res = await fetch('http://localhost:3000/api/links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, url })
-      });
+     const res = await fetch('/api/links', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, url })
+    });
+
 
       if (res.status === 201) {
         form.reset();
@@ -116,7 +117,8 @@
     window.showStats = async function(code) {
       const link = links.find(x => x.code === code);
       if (!link) return;
-      const shortUrl = `http://localhost:3000/${link.code}`;
+      const shortUrl = `${window.location.origin}/${link.code}`;
+
       let html = `
         <h2>Stats for <span style="color:var(--primary)">${link.code}</span></h2>
         <p><b>Short Link:</b> <a href="${shortUrl}" target="_blank">${shortUrl}</a></p>
