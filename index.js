@@ -8,6 +8,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
 
 // IMPORTANT PART: SSL for Neon/Postgres
 const pool = new Pool({
